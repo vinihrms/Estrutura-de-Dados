@@ -6,6 +6,7 @@ int main()
 {
 
     /*
+    Intruction:
     Implemente um programa que leia dois
     números racionais pela linha de comando
     e imprima o resultado da soma, da
@@ -14,7 +15,7 @@ int main()
     forma simplificada.
     */
 
-    int d1, n1, d2, n2;
+    int n1, d1, n2, d2;
 
     cout << "Numerator value for the fisrt rational: " << endl;
     cin >> n1;
@@ -26,36 +27,40 @@ int main()
     cout << "Denominator value for the secont rational: " << endl;
     cin >> d2;
 
-    N_Rational *r1, *r2, *result;
+    N_Rational r1(n1, d1);
+    N_Rational r2(n2, d2);
+    N_Rational result;
 
-    r1 = create_rational();
-    r2 = create_rational();
-    result = create_rational();
-
-    assign_rational(r1, n1, d1);
-    assign_rational(r2, n2, d2);
-
-    if (sum_rational(r1, r2, result) == 0) {
-        simp_rational(result);
+    if (r1.sum_rational(&r2, &result) == 0)
+    {
+        result.simp_rational();
         cout << "Sum result: " << endl;
-        printf("Numerator: %d. Denominator: %d\n", result->numerator, result->denominator);
-    } else {
+        cout << "Numerator: " << result.get_numerator() << ". Denominator: " << result.get_denominator() << endl;
+    }
+    else
+    {
         cout << "Sum rror!" << endl;
     }
 
-    if (sub_rational(r1, r2, result) == 0) {
-        simp_rational(result);
+    if (r1.sub_rational(&r2, &result) == 0)
+    {
+        result.simp_rational();
         cout << "Sub result: " << endl;
-        printf("Numerator: %d. Denominator: %d\n", result->numerator, result->denominator);
-    } else {
+        printf("Numerator: %d. Denominator: %d\n", result.get_numerator(), result.get_denominator());
+    }
+    else
+    {
         cout << "Sub error!" << endl;
     }
-    
-    if (div_rational(r1, r2, result) == 0) {
-        simp_rational(result);
+
+    if (r1.div_rational(&r2, &result) == 0)
+    {
+        result.simp_rational();
         cout << "Div result: " << endl;
-        printf("Numerator: %d. Denominator: %d\n", result->numerator, result->denominator);
-    } else {
+        printf("Numerator: %d. Denominator: %d\n", result.get_numerator(), result.get_denominator());
+    }
+    else
+    {
         cout << "Div error!" << endl;
     }
 
