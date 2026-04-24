@@ -12,7 +12,7 @@
 ```
 ### Para compilar arquivos:
 ```shell
-g++ *.cpp -o main.out
+g++ *.cpp -o main.out && ./main.out
 ```
 
 ### Referências:
