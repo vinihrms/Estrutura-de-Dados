@@ -1,14 +1,19 @@
 # Algoritmos realizados na matéria de Estrutura de Dados
 ## 2o ano Ciência da Computação - UNIOESTE 2026
 
+### Diretórios
 ```
 📦 Estrutura-de-Dados
 ├─ aula1_basico         // comandos iniciais
 ├─ tad_ponto_x_y        // tipo abstrato de dados para ponto (x, y)
-└─ tad_racional         // tad para número racional (numerador/denominador)
+└─ tad_racional         // tad para número racional (numerador/denominador)└─ trabalhador_oo         // exemplo de orientação a objetos
 
 
-
+```
+### Para compilar arquivos:
+```shell
+g++ *.cpp -o main.out
+```
 
 ### Referências:
 #### Gerador de Árvore de Projeto
