@@ -9,10 +9,10 @@ using namespace std;
 int main(){
 
     Trabalhador* t1 = new Trabalhador();
-    Professor* p1 = new Professor("Josue", 15, "Unioeste", "Algoritimossssssssss");
+    Trabalhador* p1 = new Professor("Josue", 15, "Unioeste", "Algoritimossssssssss");
     t1->apresenteSe();
     p1->apresenteSe();
-    //p1->prepararAula();
+    dynamic_cast<Professor *>(p1)->prepararAula();
     t1->Trabalho();
     p1->Trabalho();
 
