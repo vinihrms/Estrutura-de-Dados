@@ -10,11 +10,14 @@ int main(){
 
     Trabalhador* t1 = new Trabalhador();
     Trabalhador* p1 = new Professor("Josue", 15, "Unioeste", "Algoritimossssssssss");
+    Trabalhador* d1 = new Desenvolvedor("Vinicius", 19, "Mafia", "PAAITON e CILABEE");
     t1->apresenteSe();
     p1->apresenteSe();
     dynamic_cast<Professor *>(p1)->prepararAula();
     t1->Trabalho();
     p1->Trabalho();
+    dynamic_cast<Desenvolvedor *>(d1)->prepararCodigo();
+    d1->Trabalho();
 
 
 
