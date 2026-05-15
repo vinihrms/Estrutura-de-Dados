@@ -23,7 +23,7 @@ class Trabalhador{
         void apresenteSe();
         Trabalhador();
         Trabalhador(string nome, int idade, string organizacao);
-        void Trabalho();
+        virtual void Trabalho();
 };
 
 #endif
