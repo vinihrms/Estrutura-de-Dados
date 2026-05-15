@@ -12,7 +12,7 @@ int main(){
     Professor* p1 = new Professor("Josue", 15, "Unioeste", "Algoritimossssssssss");
     t1->apresenteSe();
     p1->apresenteSe();
-    p1->prepararAula();
+    //p1->prepararAula();
     t1->Trabalho();
     p1->Trabalho();
 
