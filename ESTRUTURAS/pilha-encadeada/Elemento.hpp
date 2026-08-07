@@ -10,10 +10,12 @@ public:
     Elemento();
     ~Elemento();
 
-    Elemento<T>* GetProximo();
+    Elemento* GetProximo();
     T GetInfo();
     void SetProximo(Elemento<T> *proximo);
-    void SetInfo(T info);
+    void SetInfo(T dado);
+
+
 
 };
 
