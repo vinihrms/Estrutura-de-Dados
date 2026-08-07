@@ -1,7 +1,7 @@
 #ifndef LISTA_SE_H
 #define LISTA_SE_H
 
-#include "Elemento.h";
+#include "Elemento.h"
 
 #define ERRO_LISTA_CHEIA 0
 #define ERRO_LISTA_VAZIA 1
@@ -9,8 +9,9 @@
 #define ERRO_NAO_CONTEM 3
 
 
+
 template<typename T>
-class Lista {
+class Lista{
 private:
     Elemento<T> *_dados;
     int _tamanho;
@@ -37,7 +38,7 @@ public:
     T retiraEspecifico(T dado);
 };
 
-#include "Lista.cpp"
+#include "ListaSE.cpp"
 
 
 #endif // !LISTA_SE_H
