@@ -7,12 +7,21 @@ Elemento<T>::Elemento(){
 
 template<typename T>
 Elemento<T>::~Elemento(){
+
 }
+
 
 template<typename T>
 Elemento<T>* Elemento<T>::GetProximo(){
     return _proximo;
 }
+
+
+template<typename T>
+void Elemento<T>::SetProximo(Elemento<T> *proximo){
+    _proximo = proximo;
+}
+
 
 template<typename T>
 T Elemento<T>::GetInfo(){
@@ -20,13 +29,6 @@ T Elemento<T>::GetInfo(){
 }
 
 template<typename T>
-void Elemento<T>::SetProximo(Elemento<T> *proximo){
-    _proximo = proximo;
-}
-
-template<typename T>
 void Elemento<T>::SetInfo(T dado){
-    _info = dado
+    _info = dado;
 }
-
-
