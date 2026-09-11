@@ -20,9 +20,9 @@ public:
     bool filaVazia();
     void adiciona(T dado);
     T retira();
+    void imprime();
+    
 };
-
-
 
 
 #include "FilaEnc.cpp"

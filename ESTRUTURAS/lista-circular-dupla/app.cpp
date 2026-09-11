@@ -1,11 +1,11 @@
 #include <iostream>
-#include "ListaSE.h"
+#include "ListaDE.hpp"
 
 using namespace std;
 
 int main()
 {
-    ListaSE<int> l1;
+    ListaDupla<int> l1;
 
     l1.adicionaNoInicio(1);
     l1.adicionaNoInicio(2);
@@ -26,7 +26,7 @@ int main()
     int i = 1;
 
     while (!l1.listaVazia())
-    {   
+    {
 
         if (i == 2)
         {
@@ -45,11 +45,13 @@ int main()
         i++;
     }
 
-    if(l1.listaVazia()){
+    if (l1.listaVazia())
+    {
         cout << "A lista está vazia!\n";
-    } else {
+    }
+    else
+    {
         cout << "Ainda há elementos na lista!\n";
     }
-
     return 0;
 }

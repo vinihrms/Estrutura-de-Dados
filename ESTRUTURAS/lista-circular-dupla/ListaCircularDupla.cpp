@@ -1,31 +1,30 @@
-#include "ListaSE.h"
+#include "ListaCircularDupla.hpp"
 #include <stdio.h>
 
 using namespace std;
 
 template<typename T>
-ListaSE<T>::ListaSE()
+ListaCircularDupla<T>::ListaCircularDupla()
 {
     _dados = nullptr;
     _tamanho = 0;
 }
 
 template<typename T>
-ListaSE<T>::~ListaSE()
+ListaCircularDupla<T>::~ListaCircularDupla()
 {
-    destroiLista();
 }
 
 template<typename T>
-bool ListaSE<T>::listaVazia()
+bool ListaCircularDupla<T>::listaVazia()
 {
     return (_tamanho == 0);
 }
 
 template<typename T>
-void ListaSE<T>::adicionaNoInicio(T dado)
+void ListaCircularDupla<T>::adicionaNoInicio(T dado)
 {
-    Elemento<T> *aux = new Elemento<T>;
+    ElementoDuplo<T> *aux = new ElementoDuplo<T>;
     if (aux == nullptr)
     {
         throw(ERRO_LISTA_CHEIA);
@@ -40,7 +39,7 @@ void ListaSE<T>::adicionaNoInicio(T dado)
 }
 
 template<typename T>
-T ListaSE<T>::retiraDoInicio()
+T ListaCircularDupla<T>::retiraDoInicio()
 {
     if (listaVazia())
     {
@@ -48,7 +47,7 @@ T ListaSE<T>::retiraDoInicio()
     }
     else
     {
-        Elemento<T> *aux = _dados;
+        ElementoDuplo<T> *aux = _dados;
         T volta = aux->GetInfo();
         _dados = aux->GetProximo();
         _tamanho--;
@@ -58,7 +57,7 @@ T ListaSE<T>::retiraDoInicio()
 }
 
 template<typename T>
-void ListaSE<T>::adicionaNaPosicao(T dado, int posicao)
+void ListaCircularDupla<T>::adicionaNaPosicao(T dado, int posicao)
 {
     if (posicao > _tamanho + 1 || posicao < 1)
     {
@@ -70,7 +69,7 @@ void ListaSE<T>::adicionaNaPosicao(T dado, int posicao)
         return adicionaNoInicio(dado);
     }
 
-    Elemento<T> *novo = new Elemento<T>;
+    ElementoDuplo<T> *novo = new ElementoDuplo<T>;
     if (novo == nullptr)
     {
         throw(ERRO_LISTA_CHEIA);
@@ -78,7 +77,7 @@ void ListaSE<T>::adicionaNaPosicao(T dado, int posicao)
 
     novo->SetInfo(dado);
 
-    Elemento<T> *anterior = _dados;
+    ElementoDuplo<T> *anterior = _dados;
     for (int i = 1; i < posicao - 1; i++)
     {
         anterior = anterior->GetProximo();
@@ -90,7 +89,7 @@ void ListaSE<T>::adicionaNaPosicao(T dado, int posicao)
 }
 
 template<typename T>
-T ListaSE<T>::retiraDaPosicao(int posicao)
+T ListaCircularDupla<T>::retiraDaPosicao(int posicao)
 {
     if (posicao > _tamanho || posicao < 1)
     {
@@ -102,13 +101,13 @@ T ListaSE<T>::retiraDaPosicao(int posicao)
         return retiraDoInicio();
     }
 
-    Elemento<T> *anterior = _dados;
+    ElementoDuplo<T> *anterior = _dados;
     for (int i = 1; i < posicao - 1; i++)
     {
         anterior = anterior->GetProximo();
     }
 
-    Elemento<T> *eliminar = anterior->GetProximo();
+    ElementoDuplo<T> *eliminar = anterior->GetProximo();
     T volta = eliminar->GetInfo();
 
     anterior->SetProximo(eliminar->GetProximo());
@@ -119,14 +118,14 @@ T ListaSE<T>::retiraDaPosicao(int posicao)
 }
 
 template<typename T>
-void ListaSE<T>::adicionaEmOrdem(T dado)
+void ListaCircularDupla<T>::adicionaEmOrdem(T dado)
 {
     if (listaVazia())
     {
         return adicionaNoInicio(dado);
     }
 
-    Elemento<T> *atual = _dados;
+    ElementoDuplo<T> *atual = _dados;
     int posicao = 1;
 
     while (atual != nullptr && dado > atual->GetInfo())
@@ -139,14 +138,14 @@ void ListaSE<T>::adicionaEmOrdem(T dado)
 }
 
 template<typename T>
-int ListaSE<T>::posicao(T dado)
+int ListaCircularDupla<T>::posicao(T dado)
 {
     if (listaVazia())
     {
         throw(ERRO_LISTA_VAZIA);
     }
 
-    Elemento<T> *atual = _dados;
+    ElementoDuplo<T> *atual = _dados;
     for (int i = 0; i < _tamanho; i++)
     {
         if (atual->GetInfo() == dado)
@@ -160,14 +159,14 @@ int ListaSE<T>::posicao(T dado)
 }
 
 template<typename T>
-bool ListaSE<T>::contem(T dado)
+bool ListaCircularDupla<T>::contem(T dado)
 {
     if (listaVazia())
     {
         return false;
     }
 
-    Elemento<T> *atual = _dados;
+    ElementoDuplo<T> *atual = _dados;
     while (atual != nullptr)
     {
         if (atual->GetInfo() == dado)
@@ -181,19 +180,19 @@ bool ListaSE<T>::contem(T dado)
 }
 
 template<typename T>
-void ListaSE<T>::adiciona(T dado)
+void ListaCircularDupla<T>::adiciona(T dado)
 {
     return adicionaNaPosicao(dado, _tamanho + 1);
 }
 
 template<typename T>
-T ListaSE<T>::retira()
+T ListaCircularDupla<T>::retira()
 {
     return retiraDaPosicao(_tamanho);
 }
 
 template<typename T>
-T ListaSE<T>::retiraEspecifico(T dado)
+T ListaCircularDupla<T>::retiraEspecifico(T dado)
 {
     if (contem(dado))
     {
@@ -206,23 +205,9 @@ T ListaSE<T>::retiraEspecifico(T dado)
 }
 
 template<typename T>
-void ListaSE<T>::limpaLista(){
+void ListaCircularDupla<T>::limpaLista(){
     while (!listaVazia())
     {
         retiraDoInicio();
     }
-}
-
-template<typename T>
-void ListaSE<T>::destroiLista()
-{
-    Elemento<T> *atual = _dados;
-    while (atual != nullptr)
-    {
-        Elemento<T> *proximo = atual->GetProximo();
-        delete atual;
-        atual = proximo;
-    }
-    _dados = nullptr;
-    _tamanho = 0;
 }

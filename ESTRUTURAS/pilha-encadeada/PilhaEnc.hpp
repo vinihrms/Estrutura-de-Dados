@@ -22,4 +22,6 @@ public:
 
 };
 
+#include "PilhaEnc.cpp"
+
 #endif // !PILHAENC_H

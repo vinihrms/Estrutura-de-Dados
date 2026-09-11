@@ -1,11 +1,11 @@
 #include <iostream>
-#include "ListaSE.h"
+#include "ListaCircularSimples.hpp"
 
 using namespace std;
 
 int main()
 {
-    ListaSE<int> l1;
+    ListaCircularSimples<int> l1;
 
     l1.adicionaNoInicio(1);
     l1.adicionaNoInicio(2);
@@ -50,6 +50,8 @@ int main()
     } else {
         cout << "Ainda há elementos na lista!\n";
     }
+
+    l1.~ListaCircularSimples();
 
     return 0;
 }

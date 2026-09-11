@@ -1,29 +1,37 @@
-#include "ListaSE.h"
+#include "ListaCircularSimples.hpp"
 #include <stdio.h>
 
 using namespace std;
 
 template<typename T>
-ListaSE<T>::ListaSE()
+ListaCircularSimples<T>::ListaCircularSimples()
 {
-    _dados = nullptr;
+    _dados = new Elemento<T>;
+
+    if (_dados == nullptr)
+    {
+        throw(ERRO_LISTA_CHEIA);
+    }
+
+    _dados->SetProximo(_dados);
+
     _tamanho = 0;
 }
 
 template<typename T>
-ListaSE<T>::~ListaSE()
+ListaCircularSimples<T>::~ListaCircularSimples()
 {
-    destroiLista();
+    
 }
 
 template<typename T>
-bool ListaSE<T>::listaVazia()
+bool ListaCircularSimples<T>::listaVazia()
 {
     return (_tamanho == 0);
 }
 
 template<typename T>
-void ListaSE<T>::adicionaNoInicio(T dado)
+void ListaCircularSimples<T>::adicionaNoInicio(T dado)
 {
     Elemento<T> *aux = new Elemento<T>;
     if (aux == nullptr)
@@ -32,15 +40,15 @@ void ListaSE<T>::adicionaNoInicio(T dado)
     }
     else
     {
-        aux->SetProximo(_dados);
         aux->SetInfo(dado);
-        _dados = aux;
+        aux->SetProximo(_dados->GetProximo());
+        _dados->SetProximo(aux);
         _tamanho++;
     }
 }
 
 template<typename T>
-T ListaSE<T>::retiraDoInicio()
+T ListaCircularSimples<T>::retiraDoInicio()
 {
     if (listaVazia())
     {
@@ -58,7 +66,7 @@ T ListaSE<T>::retiraDoInicio()
 }
 
 template<typename T>
-void ListaSE<T>::adicionaNaPosicao(T dado, int posicao)
+void ListaCircularSimples<T>::adicionaNaPosicao(T dado, int posicao)
 {
     if (posicao > _tamanho + 1 || posicao < 1)
     {
@@ -90,7 +98,7 @@ void ListaSE<T>::adicionaNaPosicao(T dado, int posicao)
 }
 
 template<typename T>
-T ListaSE<T>::retiraDaPosicao(int posicao)
+T ListaCircularSimples<T>::retiraDaPosicao(int posicao)
 {
     if (posicao > _tamanho || posicao < 1)
     {
@@ -119,7 +127,7 @@ T ListaSE<T>::retiraDaPosicao(int posicao)
 }
 
 template<typename T>
-void ListaSE<T>::adicionaEmOrdem(T dado)
+void ListaCircularSimples<T>::adicionaEmOrdem(T dado)
 {
     if (listaVazia())
     {
@@ -139,7 +147,7 @@ void ListaSE<T>::adicionaEmOrdem(T dado)
 }
 
 template<typename T>
-int ListaSE<T>::posicao(T dado)
+int ListaCircularSimples<T>::posicao(T dado)
 {
     if (listaVazia())
     {
@@ -160,7 +168,7 @@ int ListaSE<T>::posicao(T dado)
 }
 
 template<typename T>
-bool ListaSE<T>::contem(T dado)
+bool ListaCircularSimples<T>::contem(T dado)
 {
     if (listaVazia())
     {
@@ -181,19 +189,19 @@ bool ListaSE<T>::contem(T dado)
 }
 
 template<typename T>
-void ListaSE<T>::adiciona(T dado)
+void ListaCircularSimples<T>::adiciona(T dado)
 {
     return adicionaNaPosicao(dado, _tamanho + 1);
 }
 
 template<typename T>
-T ListaSE<T>::retira()
+T ListaCircularSimples<T>::retira()
 {
     return retiraDaPosicao(_tamanho);
 }
 
 template<typename T>
-T ListaSE<T>::retiraEspecifico(T dado)
+T ListaCircularSimples<T>::retiraEspecifico(T dado)
 {
     if (contem(dado))
     {
@@ -206,23 +214,9 @@ T ListaSE<T>::retiraEspecifico(T dado)
 }
 
 template<typename T>
-void ListaSE<T>::limpaLista(){
+void ListaCircularSimples<T>::limpaLista(){
     while (!listaVazia())
     {
         retiraDoInicio();
     }
-}
-
-template<typename T>
-void ListaSE<T>::destroiLista()
-{
-    Elemento<T> *atual = _dados;
-    while (atual != nullptr)
-    {
-        Elemento<T> *proximo = atual->GetProximo();
-        delete atual;
-        atual = proximo;
-    }
-    _dados = nullptr;
-    _tamanho = 0;
 }

@@ -1,4 +1,6 @@
 #include "FilaEnc.hpp"
+#include <iostream>
+using namespace std;
 
 template<typename T>
 FilaEnc<T>::FilaEnc(){
@@ -9,7 +11,7 @@ FilaEnc<T>::FilaEnc(){
 
 template<typename T>
 FilaEnc<T>::~FilaEnc(){
-    destroiFila();
+    
 }
 
 template<typename T>
@@ -29,6 +31,7 @@ void FilaEnc<T>::adiciona(T dado){
         _fim->SetProximo(novo);
         }
         novo->SetProximo(nullptr);
+        novo->SetInfo(dado);
         _fim = novo;
         _tamanho += 1;
     }
@@ -40,7 +43,7 @@ T FilaEnc<T>::retira(){
         throw(ERRO_FILA_VAZIA);
     } else {
         T volta;
-        Elemento<T> saiu;
+        Elemento<T> *saiu;
         saiu = _dados;
         volta = saiu->GetInfo();
         _dados = saiu->GetProximo();
@@ -55,4 +58,15 @@ T FilaEnc<T>::retira(){
     }
 }
 
+template<typename T>
+void FilaEnc<T>::imprime(){
+    Elemento<T> *atual = _dados;
 
+    while (atual != nullptr)
+    {
+        cout << atual->GetInfo()<< " ";
+        atual = atual->GetProximo();
+    }
+
+    cout << endl;
+}

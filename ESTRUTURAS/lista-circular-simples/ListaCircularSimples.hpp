@@ -1,7 +1,7 @@
-#ifndef LISTA_SE_H
-#define LISTA_SE_H
+#ifndef LISTA_CIRCULAR_SIMPLES
+#define LISTA_CIRCULAR_SIMPLES
 
-#include "Elemento.h"
+#include "Elemento.hpp"
 
 #define ERRO_LISTA_CHEIA 0
 #define ERRO_LISTA_VAZIA 1
@@ -11,17 +11,15 @@
 
 
 template<typename T>
-class ListaSE{
+class ListaCircularSimples{
 private:
     Elemento<T> *_dados;
     int _tamanho;
 
 public:
-    ListaSE(); //
+    ListaCircularSimples(); //
     void limpaLista();
-    ~ListaSE(); //
-
-    void destroiLista();
+    ~ListaCircularSimples(); //
 
     bool listaVazia(); //
     int posicao(T dado); //
@@ -38,7 +36,7 @@ public:
     T retiraEspecifico(T dado);
 };
 
-#include "ListaSE.cpp"
+#include "ListaCircularSimples.cpp"
 
 
-#endif // !LISTA_SE_H
+#endif // !LISTA_CIRCULAR_SIMPLES

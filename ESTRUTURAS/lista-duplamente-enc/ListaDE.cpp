@@ -1,31 +1,31 @@
-#include "ListaSE.h"
+#include "ListaDE.hpp"
 #include <stdio.h>
 
 using namespace std;
 
 template<typename T>
-ListaSE<T>::ListaSE()
+ListaDupla<T>::ListaDupla()
 {
     _dados = nullptr;
     _tamanho = 0;
 }
 
 template<typename T>
-ListaSE<T>::~ListaSE()
+ListaDupla<T>::~ListaDupla()
 {
     destroiLista();
 }
 
 template<typename T>
-bool ListaSE<T>::listaVazia()
+bool ListaDupla<T>::listaVazia()
 {
     return (_tamanho == 0);
 }
 
 template<typename T>
-void ListaSE<T>::adicionaNoInicio(T dado)
+void ListaDupla<T>::adicionaNoInicio(T dado)
 {
-    Elemento<T> *aux = new Elemento<T>;
+    ElementoDuplo<T> *aux = new ElementoDuplo<T>;
     if (aux == nullptr)
     {
         throw(ERRO_LISTA_CHEIA);
@@ -40,7 +40,7 @@ void ListaSE<T>::adicionaNoInicio(T dado)
 }
 
 template<typename T>
-T ListaSE<T>::retiraDoInicio()
+T ListaDupla<T>::retiraDoInicio()
 {
     if (listaVazia())
     {
@@ -48,7 +48,7 @@ T ListaSE<T>::retiraDoInicio()
     }
     else
     {
-        Elemento<T> *aux = _dados;
+        ElementoDuplo<T> *aux = _dados;
         T volta = aux->GetInfo();
         _dados = aux->GetProximo();
         _tamanho--;
@@ -58,7 +58,7 @@ T ListaSE<T>::retiraDoInicio()
 }
 
 template<typename T>
-void ListaSE<T>::adicionaNaPosicao(T dado, int posicao)
+void ListaDupla<T>::adicionaNaPosicao(T dado, int posicao)
 {
     if (posicao > _tamanho + 1 || posicao < 1)
     {
@@ -70,7 +70,7 @@ void ListaSE<T>::adicionaNaPosicao(T dado, int posicao)
         return adicionaNoInicio(dado);
     }
 
-    Elemento<T> *novo = new Elemento<T>;
+    ElementoDuplo<T> *novo = new ElementoDuplo<T>;
     if (novo == nullptr)
     {
         throw(ERRO_LISTA_CHEIA);
@@ -78,7 +78,7 @@ void ListaSE<T>::adicionaNaPosicao(T dado, int posicao)
 
     novo->SetInfo(dado);
 
-    Elemento<T> *anterior = _dados;
+    ElementoDuplo<T> *anterior = _dados;
     for (int i = 1; i < posicao - 1; i++)
     {
         anterior = anterior->GetProximo();
@@ -90,7 +90,7 @@ void ListaSE<T>::adicionaNaPosicao(T dado, int posicao)
 }
 
 template<typename T>
-T ListaSE<T>::retiraDaPosicao(int posicao)
+T ListaDupla<T>::retiraDaPosicao(int posicao)
 {
     if (posicao > _tamanho || posicao < 1)
     {
@@ -102,13 +102,13 @@ T ListaSE<T>::retiraDaPosicao(int posicao)
         return retiraDoInicio();
     }
 
-    Elemento<T> *anterior = _dados;
+    ElementoDuplo<T> *anterior = _dados;
     for (int i = 1; i < posicao - 1; i++)
     {
         anterior = anterior->GetProximo();
     }
 
-    Elemento<T> *eliminar = anterior->GetProximo();
+    ElementoDuplo<T> *eliminar = anterior->GetProximo();
     T volta = eliminar->GetInfo();
 
     anterior->SetProximo(eliminar->GetProximo());
@@ -119,14 +119,14 @@ T ListaSE<T>::retiraDaPosicao(int posicao)
 }
 
 template<typename T>
-void ListaSE<T>::adicionaEmOrdem(T dado)
+void ListaDupla<T>::adicionaEmOrdem(T dado)
 {
     if (listaVazia())
     {
         return adicionaNoInicio(dado);
     }
 
-    Elemento<T> *atual = _dados;
+    ElementoDuplo<T> *atual = _dados;
     int posicao = 1;
 
     while (atual != nullptr && dado > atual->GetInfo())
@@ -139,14 +139,14 @@ void ListaSE<T>::adicionaEmOrdem(T dado)
 }
 
 template<typename T>
-int ListaSE<T>::posicao(T dado)
+int ListaDupla<T>::posicao(T dado)
 {
     if (listaVazia())
     {
         throw(ERRO_LISTA_VAZIA);
     }
 
-    Elemento<T> *atual = _dados;
+    ElementoDuplo<T> *atual = _dados;
     for (int i = 0; i < _tamanho; i++)
     {
         if (atual->GetInfo() == dado)
@@ -160,14 +160,14 @@ int ListaSE<T>::posicao(T dado)
 }
 
 template<typename T>
-bool ListaSE<T>::contem(T dado)
+bool ListaDupla<T>::contem(T dado)
 {
     if (listaVazia())
     {
         return false;
     }
 
-    Elemento<T> *atual = _dados;
+    ElementoDuplo<T> *atual = _dados;
     while (atual != nullptr)
     {
         if (atual->GetInfo() == dado)
@@ -181,19 +181,19 @@ bool ListaSE<T>::contem(T dado)
 }
 
 template<typename T>
-void ListaSE<T>::adiciona(T dado)
+void ListaDupla<T>::adiciona(T dado)
 {
     return adicionaNaPosicao(dado, _tamanho + 1);
 }
 
 template<typename T>
-T ListaSE<T>::retira()
+T ListaDupla<T>::retira()
 {
     return retiraDaPosicao(_tamanho);
 }
 
 template<typename T>
-T ListaSE<T>::retiraEspecifico(T dado)
+T ListaDupla<T>::retiraEspecifico(T dado)
 {
     if (contem(dado))
     {
@@ -206,7 +206,7 @@ T ListaSE<T>::retiraEspecifico(T dado)
 }
 
 template<typename T>
-void ListaSE<T>::limpaLista(){
+void ListaDupla<T>::limpaLista(){
     while (!listaVazia())
     {
         retiraDoInicio();
@@ -214,12 +214,12 @@ void ListaSE<T>::limpaLista(){
 }
 
 template<typename T>
-void ListaSE<T>::destroiLista()
+void ListaDupla<T>::destroiLista()
 {
-    Elemento<T> *atual = _dados;
+    ElementoDuplo<T> *atual = _dados;
     while (atual != nullptr)
     {
-        Elemento<T> *proximo = atual->GetProximo();
+        ElementoDuplo<T> *proximo = atual->GetProximo();
         delete atual;
         atual = proximo;
     }

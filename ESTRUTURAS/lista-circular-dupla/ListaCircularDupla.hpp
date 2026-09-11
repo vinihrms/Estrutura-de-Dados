@@ -1,27 +1,23 @@
-#ifndef LISTA_SE_H
-#define LISTA_SE_H
+#ifndef LISTA_CIRCULAR_DUPLA
+#define LISTA_CIRCULAR_DUPLA
 
-#include "Elemento.h"
+#include "ElementoDuplo.hpp"
 
 #define ERRO_LISTA_CHEIA 0
 #define ERRO_LISTA_VAZIA 1
 #define ERRO_POSICAO 2
 #define ERRO_NAO_CONTEM 3
 
-
-
 template<typename T>
-class ListaSE{
+class ListaCircularDupla{
 private:
-    Elemento<T> *_dados;
+    ElementoDuplo<T> *_dados;
     int _tamanho;
 
 public:
-    ListaSE(); //
+    ListaCircularDupla(); //
     void limpaLista();
-    ~ListaSE(); //
-
-    void destroiLista();
+    ~ListaCircularDupla(); //
 
     bool listaVazia(); //
     int posicao(T dado); //
@@ -32,13 +28,13 @@ public:
     void adicionaNaPosicao(T dado, int posicao); //
     void adicionaEmOrdem(T dado); //
 
-    T retira();
+    T retira(); //
     T retiraDoInicio(); //
     T retiraDaPosicao(int posicao); //
     T retiraEspecifico(T dado);
 };
 
-#include "ListaSE.cpp"
+#include "ListaCircularDupla.cpp"
 
 
-#endif // !LISTA_SE_H
+#endif // !LISTA_CIRCULAR_DUPLA

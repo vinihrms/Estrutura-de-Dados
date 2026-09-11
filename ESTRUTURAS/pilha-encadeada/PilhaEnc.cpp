@@ -1,6 +1,4 @@
 #include "PilhaEnc.hpp"
-
-
 template<typename T>
 PilhaEnc<T>::PilhaEnc(){
     _dados = nullptr;
@@ -9,7 +7,6 @@ PilhaEnc<T>::PilhaEnc(){
 
 template<typename T>
 PilhaEnc<T>::~PilhaEnc(){
-    destroiPilha();
 }
 
 template<typename T>
