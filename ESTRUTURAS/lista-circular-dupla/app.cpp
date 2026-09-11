@@ -1,11 +1,11 @@
 #include <iostream>
-#include "ListaDE.hpp"
+#include "ListaCircularDupla.hpp"
 
 using namespace std;
 
 int main()
 {
-    ListaDupla<int> l1;
+    ListaCircularDupla<int> l1;
 
     l1.adicionaNoInicio(1);
     l1.adicionaNoInicio(2);
