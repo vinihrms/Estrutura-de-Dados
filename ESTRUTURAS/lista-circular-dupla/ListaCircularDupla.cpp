@@ -21,6 +21,7 @@ bool ListaCircularDupla<T>::listaVazia()
     return (_tamanho == 0);
 }
 
+
 template<typename T>
 void ListaCircularDupla<T>::adicionaNoInicio(T dado)
 {
@@ -29,13 +30,29 @@ void ListaCircularDupla<T>::adicionaNoInicio(T dado)
     {
         throw(ERRO_LISTA_CHEIA);
     }
+    aux->SetInfo(dado);
+
+    if (listaVazia())
+    {
+        // ligando nele mesmo o próximo e o anterior
+        aux->SetProximo(aux);
+        aux->SetAnterior(aux);
+        _dados = aux;
+    }
     else
     {
+
+        // agora, como o primeiro liga nele mesmo, a cada inserção ele ligará no último (anteior do pronteiro para dados {que aponta para o fim})
+        ElementoDuplo<T> *ultimo = _dados->GetAnterior();
+
         aux->SetProximo(_dados);
-        aux->SetInfo(dado);
+        aux->SetAnterior(ultimo);
+        ultimo->SetProximo(aux);
+        _dados->SetAnterior(aux);
         _dados = aux;
-        _tamanho++;
     }
+
+    _tamanho++;
 }
 
 template<typename T>
@@ -49,7 +66,24 @@ T ListaCircularDupla<T>::retiraDoInicio()
     {
         ElementoDuplo<T> *aux = _dados;
         T volta = aux->GetInfo();
-        _dados = aux->GetProximo();
+
+        if (_tamanho == 1)
+        {
+            _dados = nullptr;
+        }
+        else
+        {
+            // novo inicio = proximo de _dados (proximo do inicio)
+            ElementoDuplo<T> *novoInicio = aux->GetProximo();
+
+            // guarda o fim da lista (anterior do inicio = anterior de _dados)
+            ElementoDuplo<T> *ultimo = aux->GetAnterior();
+
+            ultimo->SetProximo(novoInicio);
+            novoInicio->SetAnterior(ultimo);
+            _dados = novoInicio;
+        }
+
         _tamanho--;
         delete aux;
         return volta;
