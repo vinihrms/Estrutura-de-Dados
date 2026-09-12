@@ -9,6 +9,7 @@ using namespace std;
 template<typename T>
 ElementoDuplo<T>::ElementoDuplo(){
     _proximo = nullptr;
+    _anterior = nullptr;
 }
 
 template<typename T>    

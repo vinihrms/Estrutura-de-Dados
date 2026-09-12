@@ -21,6 +21,17 @@ bool ListaCircularDupla<T>::listaVazia()
     return (_tamanho == 0);
 }
 
+template<typename T>
+T ListaCircularDupla<T>::getUltimo()
+{
+    if (listaVazia())
+    {
+        throw(ERRO_LISTA_VAZIA);
+    }
+
+    return _dados->GetAnterior()->GetInfo();
+}
+
 
 template<typename T>
 void ListaCircularDupla<T>::adicionaNoInicio(T dado)
@@ -216,7 +227,31 @@ bool ListaCircularDupla<T>::contem(T dado)
 template<typename T>
 void ListaCircularDupla<T>::adiciona(T dado)
 {
-    return adicionaNaPosicao(dado, _tamanho + 1);
+    ElementoDuplo<T> *novo = new ElementoDuplo<T>;
+    if (novo == nullptr)
+    {
+        throw(ERRO_LISTA_CHEIA);
+    }
+
+    novo->SetInfo(dado);
+
+    if (listaVazia())
+    {
+        novo->SetProximo(novo);
+        novo->SetAnterior(novo);
+        _dados = novo;
+    }
+    else
+    {
+        ElementoDuplo<T> *ultimo = _dados->GetAnterior();
+
+        novo->SetProximo(_dados);
+        novo->SetAnterior(ultimo);
+        ultimo->SetProximo(novo);
+        _dados->SetAnterior(novo);
+    }
+
+    _tamanho++;
 }
 
 template<typename T>

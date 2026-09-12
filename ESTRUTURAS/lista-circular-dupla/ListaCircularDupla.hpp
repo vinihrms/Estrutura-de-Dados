@@ -22,6 +22,7 @@ public:
     bool listaVazia(); //
     int posicao(T dado); //
     bool contem(T dado); //
+    T getUltimo();
 
     void adiciona(T dado);
     void adicionaNoInicio(T dado); //
@@ -32,6 +33,7 @@ public:
     T retiraDoInicio(); //
     T retiraDaPosicao(int posicao); //
     T retiraEspecifico(T dado);
+
 };
 
 #include "ListaCircularDupla.cpp"
