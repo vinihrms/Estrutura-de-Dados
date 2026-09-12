@@ -10,7 +10,7 @@ int main()
     l1->adicionaNoInicio(1);
     l1->adiciona(2);
 
-    cout << "Após inserção de 1 e 2, printando o anterior do primeiro.\n";
+    cout << "Após inserção de 1 e 2, printando o anterior do primeiro (ultimo na lista circular)\n";
     cout << l1->getUltimo() << "\n";
 
     l1->adicionaNaPosicao(99, 1);
