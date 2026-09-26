@@ -11,8 +11,6 @@ void printaVazia(PilhaEnc<int> pilha){
     }
 }
 
-
-
 int main(){
     PilhaEnc<int> p1;
 

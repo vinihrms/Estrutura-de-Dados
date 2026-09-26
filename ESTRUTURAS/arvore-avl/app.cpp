@@ -16,7 +16,6 @@ void imprimirEmOrdem( ArvoreAVL<int> *av){
         cout << *elementos[i]->getDado() << " ";
     }
     cout << "\n";
-
 }
 
 void rotacaoSimplesEsq(){
