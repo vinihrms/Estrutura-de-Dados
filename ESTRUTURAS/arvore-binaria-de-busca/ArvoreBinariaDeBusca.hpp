@@ -13,7 +13,7 @@ public:
 
     void insere(T dado);
     void escreveEmOrdem(Nodo<T>* atual);
-
+    // T* constroiArvore(int numeroNodos)
 };
 
 

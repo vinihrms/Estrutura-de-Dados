@@ -5,11 +5,14 @@ template<typename T>
 class Nodo{
 public:
     Nodo<T> *_filhoEsq;
-    Novo<T> *_filhoDir;
+    Nodo<T> *_filhoDir;
     T *_info;
     Nodo(T dado);
     ~Nodo();
     
+
+    Nodo* criaArvore(int qtd);
+
 };
 
 #endif // !NODO_HPP

@@ -37,6 +37,7 @@ void ArvoreBinariaDeBusca<T>::insere(T dado)
                 return;
             }
         }
+
         else if (dado > atual->_info)
         {
             if(atual->_filhoDir != nullptr){
@@ -53,3 +54,7 @@ template<typename T>
 void ArvoreBinariaDeBusca<T>::escreveEmOrdem(Nodo<T>* atual){
     
 }
+
+
+
+
