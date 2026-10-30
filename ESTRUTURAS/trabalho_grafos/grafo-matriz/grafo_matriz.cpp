@@ -4,17 +4,10 @@
 using namespace std;
 
 Grafo::Grafo(int numero_vertices)
-    : N_Vertices(numero_vertices), N_Arestas(0)
-{
-
-    for (int i = 0; i <= numero_vertices; i++)
-    {
-        for (int j = 0; j <= numero_vertices; j++)
-        {
-            Matriz[i][j] = 0;
-        }
-    }
-}
+    : N_Vertices(numero_vertices), N_Arestas(0){
+    for (int i = 0; i <= numero_vertices; i++){
+        for (int j = 0; j <= numero_vertices; j++){
+            Matriz[i][j] = 0;}}}
 
 void Grafo::insereAresta(TipoValorVertice *v1, TipoValorVertice *v2,
                          TipoPeso *peso)
@@ -32,13 +25,13 @@ bool Grafo::existeAresta(TipoValorVertice v1, TipoValorVertice v2)
     return false;
 }
 
-bool Grafo::listaAdjVazia(TipoValorVertice *i)
+bool Grafo::listaAdjVazia(TipoValorVertice *v)
 {
     bool vazio = true;
     int j = 0;
     while (j < this->N_Vertices && vazio)
     {
-        if (this->Matriz[*i][j] > 0)
+        if (this->Matriz[*v][j] > 0)
         {
             return false;
         }
@@ -53,7 +46,6 @@ bool Grafo::listaAdjVazia(TipoValorVertice *i)
 
 TipoApontador Grafo::primeiroListaAdj(TipoValorVertice *v)
 {
-    TipoValorVertice resultado;
     TipoApontador j = 0;
     bool vazio = true;
 
@@ -61,7 +53,6 @@ TipoApontador Grafo::primeiroListaAdj(TipoValorVertice *v)
     {
         if (this->Matriz[*v][j] > 0)
         {
-            resultado = j;
             vazio = false;
         }
         else
@@ -75,11 +66,11 @@ TipoApontador Grafo::primeiroListaAdj(TipoValorVertice *v)
         printf("ERRO: Lista adjacência vazia!\n");
     }
 
-    return resultado;
+    return j;
 }
 
 void Grafo::proxAdj(TipoValorVertice *v, TipoValorVertice *adj, TipoPeso *p,
-                        TipoApontador *prox, short *fimListaAdj)
+                        TipoApontador *prox, bool *fimListaAdj)
 {
     *adj = *prox;
     *p = this->Matriz[*v][*prox];

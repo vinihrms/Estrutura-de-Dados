@@ -41,32 +41,32 @@ int main()
 
     TipoValorVertice v1 = 9;
     TipoValorVertice v2 = 7;
-    printf("Testando a aresta {%d, %d}...\n", v1, v2);
+    printf("Testando a aresta (%d, %d)...\n", v1, v2);
     if (g->existeAresta(v1, v2))
     {
-        printf("Existe aresta {%d, %d}!\n", v1, v2);
+        printf("Existe aresta (%d, %d)!\n", v1, v2);
     }
     else
     {
-        printf("Não existe aresta {%d, %d}!\n", v1, v2);
+        printf("Não existe aresta (%d, %d)!\n", v1, v2);
     }
 
     printf("\n");
 
     v1 = 5;
     v2 = 5;
-    printf("Testando a aresta {%d, %d}...\n", v1, v2);
+    printf("Testando a aresta (%d, %d)...\n", v1, v2);
     if (g->existeAresta(v1, v2))
     {
-        printf("Existe aresta {%d, %d}!\n", v1, v2);
+        printf("Existe aresta (%d, %d)!\n", v1, v2);
     }
     else
     {
-        printf("Não existe aresta {%d, %d}!\n", v1, v2);
+        printf("Não existe aresta (%d, %d)!\n", v1, v2);
     }
 
     cout << endl;
-    printf("Retirando a aresta {%d, %d}...\n", v1, v2);
+    printf("Retirando a aresta (%d, %d)...\n", v1, v2);
 
     // *************** TESTE retiraAresta() *************** //
 
@@ -80,7 +80,6 @@ int main()
     cout << endl;
 
     // *************** TESTE listaAdjVazia() *************** //
-
 
     TipoValorVertice i = 1;
     printf("Verificação de lista de adjacência para %d\n", i);
@@ -98,7 +97,7 @@ int main()
 
     // é para dar vazio, removemos o 5, 5!
     i = 5;
-    printf("Agora, verificação de lista de adjacência para %d\n", i);
+    printf("Agora, verificação de lista de adjacência para %d...\n", i);
 
     if (g->listaAdjVazia(&i))
     {
@@ -111,17 +110,61 @@ int main()
 
     // *************** TESTE primeiroListaAdj() *************** //
 
-    // arrumar isso e entender melhor!!!!!!
-    i = 1;
+    i = 4;
 
-    TipoApontador primeiro = g->primeiroListaAdj(&i);
-    printf("%d\n", primeiro);
-    
-    
+    printf("Testando adjacencia para o vertice %d...\n", i);
+
+    if (g->listaAdjVazia(&i))
+    {
+        printf("O vertice %d nao possui adjacencias.\n", i);
+    }
+    else
+    {
+        TipoApontador primeiro = g->primeiroListaAdj(&i);
+        printf("Primeira adjacencia: %d\n", primeiro);
+    }
 
 
+    TipoValorVertice teste1 = 4;
+    TipoValorVertice teste2 = 1;
+
+    printf("Adicionando uma nova adjacencia \"menor\" em (%d, %d)...\n", teste1, teste2);
+
+    a = 77;
+
+    g->insereAresta(&teste1, &teste2, &a);
+
+    g->imprimeGrafo();
+
+
+    if (g->listaAdjVazia(&i))
+    {
+        printf("O vertice %d nao possui adjacencias.\n", i);
+    }
+    else
+    {
+        TipoApontador primeiro = g->primeiroListaAdj(&i);
+        printf("Primeira adjacencia: %d.\n", primeiro);
+    }
 
     // *************** TESTE proxAdj() *************** //
 
+    TipoValorVertice v = 4;
+    TipoValorVertice adj;
+    TipoPeso p;
+    TipoApontador prox = g->primeiroListaAdj(&v);
+    bool fimListaAdj = false;
+
+    printf("\nPercorrendo as adjacencias do vertice %d...\n", v);
+
+    while (!fimListaAdj)
+    {
+        g->proxAdj(&v, &adj, &p, &prox, &fimListaAdj);
+        printf("Aresta: %d -> %d, peso: %d\n", v, adj, p);
+    }
+
+    cout << "Destruindo grafo...\n";
     // *************** TESTE ~Grafo() *************** //
+
+    delete g;
 }
