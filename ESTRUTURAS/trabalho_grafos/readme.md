@@ -6,6 +6,6 @@
 ##### Professor: MSc. Leonardo Medeiros
 
 ### Execução
-Navegue até a pasta da implementação desejada e execute com o seu compilador de preferência:
+Navegue até a pasta da implementação desejada (`grafo-lista` ou `grafo-matriz`) e execute com o seu compilador de preferência:
 `clang++ app.cpp -o app.x && ./app.x`
 `g++ app.cpp -o app.x && ./app.x`
