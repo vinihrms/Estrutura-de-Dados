@@ -1,9 +1,7 @@
 #include "grafo_lista.hpp"
 
 TipoLista::TipoLista()
-    : Primeiro(new TipoCelula()), Ultimo(Primeiro)
-{
-}
+    : Primeiro(new TipoCelula()), Ultimo(Primeiro){}
 
 TipoLista::~TipoLista()
 {
@@ -85,7 +83,6 @@ void TipoLista::imprime() const
     putchar('\n');
 }
 
-
 TipoGrafo::TipoGrafo(TipoValorVertice n)
     : N_Vertices(n), N_Arestas(0)
 {
@@ -95,7 +92,6 @@ TipoGrafo::TipoGrafo(TipoValorVertice n)
     }
 }
 
-
 void TipoGrafo::FGVazio()
 {
     for (int i = 0; i < N_Vertices; i++)
@@ -104,7 +100,6 @@ void TipoGrafo::FGVazio()
     }
     N_Arestas = 0;
 }
-
 
 void TipoGrafo::insereAresta(TipoValorVertice *v1, TipoValorVertice *v2, TipoPeso *p)
 {

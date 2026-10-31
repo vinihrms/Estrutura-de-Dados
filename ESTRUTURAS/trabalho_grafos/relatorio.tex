@@ -1,0 +1,946 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage[portuguese]{babel}
+\usepackage{url}
+
+\usepackage{minted}
+\large
+\title{Implementação de Grafos em C++}
+\begin{document}
+\begin{titlepage}
+	\begin{center}
+    \line(1,0){300}\\
+    [0.65cm]
+    \huge{\bfseries Implementação de Grafos em C++}\\
+	\line(1,0){300}\\
+    \textsc{\LARGE Universidade Estadual do Oeste do Paraná}\\
+	\textsc{\Large 3ª Avaliação - Estrutura de Dados}\\
+    \textsc{\Large Professor MSc. Leonardo Medeiros}\\
+	\textsc{\LARGE \today}\\
+    [5.5cm]     
+	\end{center}
+	\begin{flushright}
+		\textsc{\Large Vinícius Almeida Hermes\\vinicius.hermes@unioeste.br}\\
+	\end{flushright}
+\end{titlepage}
+
+\section*{Introdução}
+
+    Este trabalho consiste na documentação de duas implementações da estrutura de grafos, para obtenção da nota pertinente à terceira avaliação da disciplina de Estrutura de Dados, ministrada pelo professor MSc. Leonardo Medeiros. Com isso, estão documentadas as implementações de grafos por matriz de adjacência e por lista de adjacência, ambas utilizando a linguagem C++.
+
+\section*{Grafo por Matriz de Adjacência}
+    Uma das formas de representar um grafo é utilizando uma matriz de adjacência. Dado um grafo G com $n$ vértices, podemos representá-lo em uma matriz \textit{n x n} $A(G)=[a_{ij}]$. Cada índice $a_{ij}$ da matriz armazena o peso da aresta que conecta $a_i$ a $a_j$. Se $a_{ij} = 0$, não há aresta ligando estes dois vértices \cite{wikipedia:matriz_adjacencia}.
+
+\subsection*{Implementação}
+\subsubsection*{Definição da classe}
+
+    \textbf{Descrição:} A classe armazena o peso de cada aresta em uma matriz de tamanho máximo de 100 x 100. Cada linha representa o vértice de origem e cada coluna representa o vértice de destino. Uma posição com valor zero indica que não existe aresta entre os respectivos vértices. Já uma posição com valor diferente de zero representa o peso da aresta. Os vértices são identificados por índices no intervalo [0, numero\_vertices - 1].
+
+\textbf{Arquivo:} \texttt{grafo\_matriz.hpp}
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+class Grafo
+{
+private:
+    TipoPeso Matriz[MAX_VERTICES][MAX_VERTICES];
+    int N_Vertices;
+    int N_Arestas;
+
+public:
+    explicit Grafo(int numero_vertices);
+
+    ~Grafo() = default;
+
+    void insereAresta(TipoValorVertice*v1, TipoValorVertice *v2,
+                        TipoPeso *peso); 
+
+    bool existeAresta(TipoValorVertice v1, TipoValorVertice v2);
+
+    bool listaAdjVazia(TipoValorVertice *v);
+
+    TipoApontador primeiroListaAdj(TipoValorVertice *v);
+    
+    void proxAdj(TipoValorVertice *v, TipoValorVertice *adj, TipoPeso *p,
+                        TipoApontador *prox, bool *fimListaAdj);
+    
+    void retiraAresta( TipoValorVertice *v1, TipoValorVertice *v2, TipoPeso *p);
+
+    void imprimeGrafo();
+};
+\end{minted}
+
+\subsubsection*{Tipos auxiliares e constantes}
+
+\begin{itemize}
+    \item \texttt{MAX\_VERTICES}: \textit{limita o tamanho físico máximo para a matriz de adjacência}.
+    \item \texttt{TipoValorVertice}: \textit{abstrai o tipo int para definir valores de vértice}.
+    \item \texttt{TipoPeso}: \textit{abstrai o tipo int para definir o peso de uma aresta}.
+    \item \texttt{TipoApontador}: \textit{abstrai o tipo int para apontar valores para um vértice}.
+\end{itemize}
+
+\subsubsection*{Atributos privados}
+
+    Os atributos armazenam o estado interno do objeto.
+
+\begin{itemize}
+    \item \texttt{Matriz}: \textit{armazena as arestas e seus pesos da matriz de adjacência}.
+    \item \texttt{N\_Vertices}: \textit{armazena o número de vértices}.
+    \item \texttt{N\_Arestas}: \textit{armazena o número de arestas}.
+\end{itemize}
+
+\subsubsection*{Métodos públicos}
+\paragraph{Construtor \texttt{Grafo()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Recebe o número de vértices e inicializa um grafo com nenhuma aresta.
+
+    \textbf{Parâmetros:}
+    \begin{itemize}
+        \item \texttt{numero\_vertices}: \textit{número de vértices que se deseja inserir no grafo}.
+    \end{itemize}
+
+    \textbf{Retorno:} construtores não possuem valor de retorno.
+
+    \textbf{Funcionamento:} Utiliza dois laços para percorrer o atributo Matriz, atribuindo 0 a cada índice Matriz[i][j] (nenhum peso de aresta).
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+Grafo::Grafo(int numero_vertices)
+    : N_Vertices(numero_vertices), N_Arestas(0){
+    for (int i = 0; i < numero_vertices; i++){
+        for (int j = 0; j < numero_vertices; j++){
+            Matriz[i][j] = 0;
+        }
+    }
+}
+\end{minted}
+\paragraph{Método \texttt{insereAresta()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Inserir uma aresta (peso) entre dois vértices.
+
+    \textbf{Parâmetros:}
+    \begin{itemize}
+        \item \texttt{v1}: \textit{vértice de origem}.
+        \item \texttt{v2}: \textit{vértice de destino}.
+        \item \texttt{peso}: \textit{peso da aresta}.
+    \end{itemize}
+
+    \textbf{Retorno:} A função não possui retorno.
+
+    \textbf{Funcionamento:} A função valida os parâmetros, rejeita pesos menores ou iguais a zero e atribui o peso informado à posição correspondente da Matriz. Caso a posição ainda não contenha uma aresta, incrementa o contador de arestas.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+void Grafo::insereAresta(TipoValorVertice *v1, TipoValorVertice *v2, TipoPeso *peso){
+    if (v1 == nullptr || v2 == nullptr || peso == nullptr ||
+        *v1 < 0 || *v1 >= N_Vertices ||
+        *v2 < 0 || *v2 >= N_Vertices || *peso <= 0){
+        return;
+    }
+    if (this->Matriz[*v1][*v2] == 0){
+        ++N_Arestas;
+    }
+    this->Matriz[*v1][*v2] = *peso;
+}
+\end{minted}
+\paragraph{Método \texttt{existeAresta()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Verifica se existe uma aresta entre dois pontos quaisquer.
+
+    \textbf{Parâmetros:}
+    \begin{itemize}
+        \item \texttt{v1}: \textit{vértice de origem}.
+        \item \texttt{v2}: \textit{vértice de destino}.
+    \end{itemize}
+
+    \textbf{Retorno:} a função retorna \textit{true} caso exista uma aresta entre os vértices (peso > 0). Caso contrário, retorna \textit{false}. O grafo considera apenas pesos positivos.
+
+    \textbf{Funcionamento:} A função acessa a Matriz no índice de parâmetro e verifica se o peso é maior que 0.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+bool Grafo::existeAresta(TipoValorVertice v1, TipoValorVertice v2){
+    if (this->Matriz[v1][v2] > 0){
+        return true;
+    }
+    return false;
+}
+\end{minted}
+\paragraph{Método \texttt{listaAdjVazia()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Verifica se há alguma adjacência no vértice em questão.
+
+    \textbf{Parâmetros:}
+    \begin{itemize}
+        \item \texttt{v}: \textit{vértice a ser verificado}.
+    \end{itemize}
+
+    \textbf{Retorno:} a função retorna \textit{true} caso não haja nenhuma adjacência. Caso contrário, retorna \textit{false}.
+
+    \textbf{Funcionamento:} A função utiliza um laço para percorrer todas as colunas da linha informada no parâmetro.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+bool Grafo::listaAdjVazia(TipoValorVertice *v){
+    bool vazio = true;
+    int j = 0;
+    while (j < this->N_Vertices && vazio){
+        if (this->Matriz[*v][j] > 0){
+            return false;
+        } else{
+            j++;
+        }
+    }
+    return true;
+}
+\end{minted}
+\paragraph{Método \texttt{primeiroListaAdj()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Obtém o primeiro vértice que tem adjacência a determinado vértice.
+
+    \textbf{Parâmetros:}
+    \begin{itemize}
+        \item \texttt{v}: \textit{vértice a ser verificado}.
+    \end{itemize}
+
+    \textbf{Retorno:} Índice do primeiro vértice adjacente. Quando não há adjacência, retorna o número de vértices, pois percorreu toda a matriz.
+
+    \textbf{Funcionamento:} A função apresenta exatamente o mesmo comportamento do método \textbf{\textit{listaAdjVazia()}}, mas, ao final, retorna o índice usado para percorrer as colunas. Caso percorra toda a matriz, também exibe uma mensagem de que a lista de adjacência para este vértice está vazia.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+TipoApontador Grafo::primeiroListaAdj(TipoValorVertice *v){
+    TipoApontador j = 0;
+    bool vazio = true;
+
+    while(j < this->N_Vertices && vazio){
+        if (this->Matriz[*v][j] > 0){
+            vazio = false;
+        } else{
+            j++;
+        }
+    }
+
+    if(j == this->N_Vertices){
+        printf("ERRO: Lista adjacência vazia!\n");
+    }
+
+    return j;
+}
+\end{minted}
+\paragraph{Método \texttt{proxAdj()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Obtém uma adjacência e avança o apontador da lista.
+
+    \textbf{Parâmetros:}
+    \begin{itemize}
+       \item \texttt{v}: \textit{vértice cuja lista de adjacência será percorrida.}
+
+        \item \texttt{adj}\textsubscript{out}: \textit{recebe o vértice adjacente encontrado.}
+
+        \item \texttt{p}\textsubscript{out}: \textit{Recebe o peso da aresta entre `v` e `adj`.}
+
+        \item \texttt{prox}\textsubscript{in,out}: \textit{Recebe a posição da próxima adjacência a ser consultada.}
+
+        \item \texttt{fimListaAdj}\textsubscript{out}: \textit{Recebe true quando não existem mais adjacências a consultar e false caso ainda existam.}
+        
+    \end{itemize}
+
+    \textbf{Retorno:} A função não possui retorno. Alguns valores de parâmetros são modificados durante sua execução.
+
+    \textbf{Funcionamento:} A função obtém a adjacência indicada pelo apontador \textit{prox}, armazenando em \textit{adj} o vértice adjacente e em \textit{p} o peso da aresta correspondente. Em seguida, avança até a próxima posição com uma aresta e informa, por meio de \textit{fimListaAdj}, se o final da lista de adjacências foi alcançado.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+void Grafo::proxAdj(TipoValorVertice *v, TipoValorVertice *adj, TipoPeso *p,
+                    TipoApontador *prox, bool *fimListaAdj){
+    *adj = *prox;
+    *p = this->Matriz[*v][*prox];
+    (*prox)++;
+
+    while(*prox < this->N_Vertices && this->Matriz[*v][*prox] == 0){
+        (*prox)++;
+    }
+
+    if (*prox == this->N_Vertices){
+        *fimListaAdj = true;
+    } else{
+        *fimListaAdj = false;
+    }
+}
+\end{minted}
+\paragraph{Método \texttt{retiraAresta()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Remove uma aresta entre dois vértices e retorna o peso que tinha.
+
+    \textbf{Parâmetros:}
+    \begin{itemize}
+       \item \texttt{v1}: \textit{vértice de origem.}
+       \item \texttt{v2}: \textit{vértice de destino.}
+
+        \item \texttt{p}\textsubscript{out}: \textit{recebe o peso da aresta removida.}
+        
+    \end{itemize}
+
+    \textbf{Retorno:} A função não possui retorno. Um valor de parâmetro é modificado durante sua execução.
+
+    \textbf{Funcionamento:} A função acessa a matriz no índice Matriz[v1][v2], atribui o valor do peso desta aresta a \textit{p} e em seguida atribui o valor 0 a este índice.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+void Grafo::retiraAresta( TipoValorVertice *v1, TipoValorVertice *v2, TipoPeso *p){
+    if (v1 == nullptr || v2 == nullptr || p == nullptr ||
+        *v1 < 0 || *v1 >= N_Vertices ||
+        *v2 < 0 || *v2 >= N_Vertices ||
+        this->Matriz[*v1][*v2] == 0){
+        printf("Aresta não existe!\n");
+    } else{
+        *p = this->Matriz[*v1][*v2];
+        this->Matriz[*v1][*v2] = 0;
+        --N_Arestas;
+    }
+}
+\end{minted}
+
+
+
+
+
+
+\paragraph{Método \texttt{imprimeGrafo()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Imprime a matriz de adjacência do grafo, com os pesos de cada aresta.
+
+        \textbf{Parâmetros:} A função não possui parâmetros.
+
+    \textbf{Retorno:} A função não possui retorno.
+
+    \textbf{Funcionamento:} A função imprime primeiro os índices das colunas. Em seguida, percorre com dois laços a matriz de adjacência, antes de começar a imprimir cada peso na linha, o laço imprime o índice atual, para formatar a tabela da matriz de adjacência.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+void Grafo::imprimeGrafo(){
+    printf("   ");
+    for (int i = 0; i < this->N_Vertices; i++){
+        printf("%3d", i);
+    }
+    printf("\n");
+
+    for (int i = 0; i < this->N_Vertices; i++){
+        printf("%3d", i);
+        for (int j = 0; j < this->N_Vertices; j++){
+            printf("%3d", this->Matriz[i][j]);
+        }
+        printf("\n");
+    }
+    cout << endl;
+}
+\end{minted}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section*{Grafo por Lista de Adjacência}
+Em uma representação de grafos utilizando lista de adjacência, podemos manter, para cada vértice do grafo, uma lista de todos os outros vértices com os quais ele tem uma aresta \cite{wikipedia:lista_adjacencia}.
+
+\subsection*{Implementação}
+
+\subsubsection*{Definição de classes auxiliares e seus métodos}
+
+    \textbf{Descrição:} Para o funcionamento do grafo por lista de adjacência, foi necessária a criação de classes auxiliares. O grafo consiste em uma "lista de listas", e cada uma dessas listas é composta por células que, cada uma delas armazena um item (que armazena o peso e o vértice) e o ponteiro para a próxima célula.
+\textbf{Arquivo:} \texttt{grafo\_lista.hpp}
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+
+class TipoItem
+{
+public:
+    TipoValorVertice Vertice;
+    TipoPeso Peso;
+    // Definição de seu construtor
+    TipoItem(TipoValorVertice v = 0, TipoPeso p = 0): Vertice(v), Peso(p){}
+};
+
+
+class TipoCelula {
+public:
+    TipoItem item;
+    TipoCelula* prox;
+    // Definição de seu construtor
+    TipoCelula(const TipoItem& item = TipoItem(), TipoCelula* prox = nullptr)
+        : item(item), prox(prox){}
+};
+
+class TipoLista{
+public:
+    TipoApontador Primeiro;
+    TipoApontador Ultimo;
+    TipoLista();
+    ~TipoLista();
+    bool vazia() const;
+    void insere(const TipoItem& i);
+    void insere(const TipoItem& i, TipoApontador l);
+    bool retira(TipoApontador p, TipoItem *i);
+    void imprime() const;
+};
+\end{minted}
+
+\paragraph*{Tipos auxiliares e constantes}
+
+\begin{itemize}
+    \item \texttt{MAX\_VERTICES}: \textit{limita o tamanho físico máximo para as listas de adjacência}.
+    \item \texttt{TipoValorVertice}: \textit{abstrai o tipo int para definir valores de vértice}.
+    \item \texttt{TipoPeso}: \textit{abstrai o tipo int para definir o peso de uma aresta}.
+    \item \texttt{TipoApontador}: \textit{abstrai o ponteiro utilizado para apontar para uma célula}.
+
+    
+\end{itemize}
+
+\paragraph*{Métodos da classe TipoLista}
+\subparagraph{Construtor \texttt{TipoLista()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Constrói uma lista vazia.
+
+    \textbf{Parâmetros:} A função não possui parâmetros.
+
+    \textbf{Retorno:} construtores não possuem valor de retorno.
+
+    \textbf{Funcionamento:} Apenas utiliza o operador \textit{new} para inicializar a lista.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+TipoLista::TipoLista()
+    : Primeiro(new TipoCelula()), Ultimo(Primeiro){}
+\end{minted}
+
+\subparagraph{Método \texttt{FLVazia()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Torna a lista vazia.
+
+    \textbf{Parâmetros:} A função não possui parâmetros.
+
+    \textbf{Retorno:} A função não possui retorno.
+
+    \textbf{Funcionamento:} Percorre toda a lista, deletando a célula atual a cada iteração. 
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+void TipoLista::FLVazia(){
+    TipoApontador atual = Primeiro->prox;
+    while (atual != nullptr){
+        TipoApontador proxima = atual->prox;
+        delete atual;
+        atual = proxima;
+    }
+    Primeiro->prox = nullptr;
+    Ultimo = Primeiro;
+}
+\end{minted}
+
+\subparagraph{Método \texttt{vazia()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Verifica se a lista está vazia.
+
+    \textbf{Parâmetros:} A função não possui parâmetros.
+
+    \textbf{Retorno:} a função retorna \textit{true} caso a lista esteja vazia. Caso contrário, retorna \textit{false}.
+
+    \textbf{Funcionamento:} A função apenas verifica se a última célula é igual a primeira, pois se a afirmação é verdadeira é porque não há elementos.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+bool TipoLista::vazia() const {
+    return Primeiro == Ultimo;
+}
+\end{minted}
+
+
+
+\subparagraph{Método \texttt{insere()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Insere elementos na lista.
+
+    \textbf{Nota:} Utiliza de sobrecarga para definir se irá inserir no final da lista ou em uma posição específica.
+
+    \textbf{Parâmetros:}
+    \begin{itemize}
+       \item \texttt{i}: \textit{item a ser inserido.}
+       \item \texttt{l}: \textit{posição a ser inserida (opcional - utilizada apenas quando deseja-se escolher a posição da inserção).}        
+    \end{itemize}
+
+    \textbf{Retorno:} A função não possui retorno.
+
+    \textbf{Funcionamento:} A função utiliza o apontador como índice para criar uma nova célula na posição, apontando a anterior (posição) para esta nova e apontando a nova para a próxima, que era da anterior. Em caso de a posição ser a última, aponta o valor \texttt{Ultimo} da lista para a nova célula.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+void TipoLista::insere(const TipoItem& i){
+    insere(i, Ultimo);
+}
+
+void TipoLista::insere(const TipoItem& i, TipoApontador l){
+    if (l == nullptr){
+        return;
+    }
+    TipoApontador nova = new TipoCelula(i, l->prox);
+    l->prox = nova;
+    if (l == Ultimo){
+        Ultimo = nova;
+    }
+}
+\end{minted}
+
+
+
+\subparagraph{Método \texttt{retira()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Retira elementos da lista.
+
+    \textbf{Parâmetros:}
+    \begin{itemize}
+       \item \texttt{p}: \textit{elemento anterior ao que será removido.}
+       \item \texttt{i}: \textit{receberá durante a execução o item que foi removido, contendo seu peso e seu vértice.}        
+    \end{itemize}
+
+    \textbf{Retorno:} a função retorna \textit{true} caso a remoção seja bem-sucedida. Caso contrário, retorna \textit{false}.
+
+    \textbf{Funcionamento:} A função cria um auxiliar que recebe o próximo de \textit{p}, altera \textit{i} para receber os atributos do item que será removido, e deleta-o. A função também verifica caso o item a ser removido seja o último da lista, para alterar o apontador de último.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+bool TipoLista::retira(TipoApontador p, TipoItem *i){
+    if (p == nullptr || p->prox == nullptr || i == nullptr){
+        return false;
+    }
+    TipoApontador q = p->prox;
+    *i = q->item;
+    p->prox = q->prox;
+    if (q == Ultimo){
+        Ultimo = p;
+    }
+    delete q;
+    return true;
+}
+\end{minted}
+
+
+
+
+
+\subparagraph{Método \texttt{imprime()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Imprime a lista.
+
+    \textbf{Parâmetros:} A função não possui parâmetros.
+
+    \textbf{Retorno:} A função não possui retorno.
+
+    \textbf{Funcionamento:} Percorre a lista imprimindo cada vértice e peso.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+void TipoLista::imprime() const {
+    TipoApontador aux = Primeiro->prox;
+    while (aux != nullptr){
+        printf("%3d (%d) ", aux->item.Vertice, aux->item.Peso);
+        aux = aux->prox;
+    }
+    putchar('\n');
+}
+\end{minted}
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{Definição de classe TipoGrafo}
+    \textbf{Descrição:} Define o grafo, contendo as listas de células, o número de vértices e arestas.
+\textbf{Arquivo:} \texttt{grafo\_lista.hpp}
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+class TipoGrafo
+{
+public:
+    TipoLista Adj[MAX_VERTICES + 1];
+    TipoValorVertice N_Vertices;
+    short N_Arestas;
+
+    TipoGrafo(TipoValorVertice n);
+
+    void FGVazio();
+
+    void insereAresta(TipoValorVertice *v1, TipoValorVertice *v2, TipoPeso *p);
+
+    bool existeAresta(TipoValorVertice v1, TipoValorVertice v2);
+
+    bool listaAdjVazia(TipoValorVertice *v);
+
+    TipoApontador primeiroListaAdj(TipoValorVertice *v);
+
+    void proxAdj(TipoValorVertice *v, TipoValorVertice *adj, TipoPeso *p, TipoApontador                     *prox, bool *fimListaAdj);
+
+    void retiraAresta(TipoValorVertice *v1, TipoValorVertice *v2, TipoPeso *p);
+
+    void liberaGrafo();
+
+    void imprimeGrafo();
+};
+\end{minted}
+
+\paragraph*{Atributos da classe}
+
+    Os atributos armazenam o estado interno do objeto.
+
+\begin{itemize}
+    \item \texttt{Adj}: \textit{vetor que armazena as listas de adjacência}.
+    \item \texttt{N\_Vertices}: \textit{armazena o número de vértices}.
+    \item \texttt{N\_Arestas}: \textit{armazena o número de arestas}.
+\end{itemize}
+
+
+\paragraph*{Métodos da classe TipoGrafo}
+
+\subparagraph{Método \texttt{TipoGrafo()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Constrói objeto TipoGrafo.
+
+    \textbf{Parâmetros:}
+    \begin{itemize}
+       \item \texttt{n}: \textit{número de vértices que o grafo terá.}
+    \end{itemize}
+
+    \textbf{Retorno:} construtores não possuem valor de retorno.
+
+    \textbf{Funcionamento:} Atribui o número de vértices do parâmetro ao N\_Vertices do objeto.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+TipoGrafo::TipoGrafo(TipoValorVertice n)
+    : N_Vertices(n), N_Arestas(0) {
+    if (n < 0 || n > MAX_VERTICES) {
+        N_Vertices = 0;
+    }
+}
+\end{minted}
+
+
+
+
+
+
+
+
+
+
+
+\subparagraph{Método \texttt{FGVazio()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Torna o grafo vazio.
+
+    \textbf{Parâmetros:} A função não possui parâmetros.
+
+    \textbf{Retorno:} A função não possui retorno.
+
+    \textbf{Funcionamento:} Percorre o vetor de listas de adjacência, e limpa cada uma delas.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+void TipoGrafo::FGVazio(){
+    for (int i = 0; i < N_Vertices; i++){
+        Adj[i].FLVazia();
+    }
+    N_Arestas = 0;
+}
+\end{minted}
+
+
+\subparagraph{Método \texttt{insereAresta()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Insere uma aresta no grafo.
+
+    \textbf{Parâmetros:}
+    \begin{itemize}
+        \item \texttt{v1}: \textit{vértice de origem.}
+        \item \texttt{v2}: \textit{vértice de destino.}
+        \item \texttt{p}: \textit{peso da aresta.}
+    \end{itemize}
+
+    \textbf{Retorno:} A função não possui retorno.
+
+    \textbf{Funcionamento:} Insere na lista do vértice seu destino com seu peso, através do método \textit{insere()} do TipoLista.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+void TipoGrafo::insereAresta(TipoValorVertice *v1, TipoValorVertice *v2, TipoPeso *p) {
+    if (v1 == nullptr || v2 == nullptr || p == nullptr ||
+        *v1 < 0 || *v1 >= N_Vertices ||
+        *v2 < 0 || *v2 >= N_Vertices) {
+        return;
+    }
+    Adj[*v1].insere(TipoItem(*v2, *p));
+    ++N_Arestas;
+}
+\end{minted}
+
+\subparagraph{Método \texttt{existeAresta()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Verifica se há uma aresta entre dois vértices.
+
+    \textbf{Parâmetros:}
+    \begin{itemize}
+        \item \texttt{v1}: \textit{vértice de origem.}
+        \item \texttt{v2}: \textit{vértice de destino.}
+    \end{itemize}
+
+    \textbf{Retorno:} a função retorna \textit{true} caso exista uma aresta entre os vértices. Caso contrário, retorna \textit{false}.
+
+    \textbf{Funcionamento:} Percorre a lista de adjacência do vértice até encontrar o possível vértice de conexão.
+
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+bool TipoGrafo::existeAresta(TipoValorVertice v1, TipoValorVertice v2){
+    if (v1 < 0 || v1 >= N_Vertices || v2 < 0 || v2 >= N_Vertices){
+        return false;
+    }
+    for (TipoApontador aux = Adj[v1].Primeiro->prox;
+         aux != nullptr;
+         aux = aux->prox) {
+        if (aux->item.Vertice == v2){
+            return true;
+        }
+    }
+    return false;
+}
+\end{minted}
+
+\subparagraph{Método \texttt{listaAdjVazia()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Verifica se a lista de adjacência para o vértice está vazia.
+
+    \textbf{Parâmetros:}
+    \begin{itemize}
+       \item \texttt{v}: \textit{vértice a ser verificado.}
+    \end{itemize}
+
+    \textbf{Retorno:} a função retorna \textit{true} caso não exista nenhuma adjacência para o vértice. Caso contrário, retorna \textit{false}.
+
+    \textbf{Funcionamento:} Chama a função de verificação se a lista está vazia para o índice do vértice.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+bool TipoGrafo::listaAdjVazia(TipoValorVertice *v){
+    if (v == nullptr || *v < 0 || *v >= N_Vertices){
+        return true;
+    }
+    return Adj[*v].vazia();
+}
+\end{minted}
+
+\subparagraph{Método \texttt{primeiroListaAdj()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Verifica qual é a primeira aresta da lista de adjacência do vértice.
+
+    \textbf{Parâmetros:}
+    \begin{itemize}
+       \item \texttt{v}: \textit{vértice a ser verificado.}
+    \end{itemize}
+
+    \textbf{Retorno:} o primeiro vértice adjacente ao vértice verificado.
+
+    \textbf{Funcionamento:} Busca o próximo do primeiro vértice da lista (a primeira adjacência).
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+TipoApontador TipoGrafo::primeiroListaAdj(TipoValorVertice *v){
+    if (v == nullptr || *v < 0 || *v >= N_Vertices){
+        return nullptr;
+    }
+    return Adj[*v].Primeiro->prox;
+}
+\end{minted}
+
+\subparagraph{Método \texttt{proxAdj()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Obtém uma adjacência e avança o apontador da lista.
+
+    \textbf{Parâmetros:}
+    \begin{itemize}
+       \item \texttt{v}: \textit{vértice cuja lista de adjacência será percorrida.}
+
+        \item \texttt{adj}\textsubscript{out}: \textit{recebe o vértice adjacente encontrado.}
+
+        \item \texttt{p}\textsubscript{out}: \textit{Recebe o peso da aresta entre `v` e `adj`.}
+
+        \item \texttt{prox}\textsubscript{in,out}: \textit{Recebe a posição da próxima adjacência a ser consultada.}
+
+        \item \texttt{fimListaAdj}\textsubscript{out}: \textit{Recebe true quando não existem mais adjacências a consultar e false caso ainda existam.}
+        
+    \end{itemize}
+
+    \textbf{Retorno:} A função não possui retorno. Alguns valores de parâmetros são modificados durante sua execução.
+
+    \textbf{Funcionamento:} A função obtém a adjacência indicada pelo apontador \textit{prox}, armazenando em \textit{adj} o vértice adjacente e em \textit{p} o peso da aresta correspondente. Em seguida, avança até a próxima posição com uma aresta e informa, por meio de \textit{fimListaAdj}, se o final da lista de adjacências foi alcançado.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+void TipoGrafo::proxAdj(TipoValorVertice *v, TipoValorVertice *adj, TipoPeso *p,                                        TipoApontador *prox, bool *fimListaAdj){
+    if (v == nullptr || adj == nullptr || p == nullptr ||
+        prox == nullptr || fimListaAdj == nullptr || *prox == nullptr){
+        *fimListaAdj = true;
+        return;
+    }
+    *adj = (*prox)->item.Vertice;
+    *p = (*prox)->item.Peso;
+    *prox = (*prox)->prox;
+    *fimListaAdj = (*prox == nullptr);
+}
+\end{minted}
+
+\subparagraph{Método \texttt{retiraAresta()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Remove uma aresta entre dois vértices e coloca em `*p` o peso que a aresta tinha.
+
+    \textbf{Parâmetros:}
+    \begin{itemize}
+       \item \texttt{v1}: \textit{vértice de origem.}
+       \item \texttt{v2}: \textit{vértice de destino.}
+       \item \texttt{p}: \textit{receberá o peso da aresta removida.}
+
+    \end{itemize}
+
+    \textbf{Retorno:} A função não possui retorno, mas altera uma variável durante sua execução.
+
+    \textbf{Funcionamento:} Percorre a lista até encontrar os dois vértices que estão ligados pela aresta e remove o item da lista.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+void TipoGrafo::retiraAresta(TipoValorVertice *v1, TipoValorVertice *v2, TipoPeso *p){
+    if (v1 == nullptr || v2 == nullptr || p == nullptr ||
+        *v1 < 0 || *v1 >= N_Vertices ||
+        *v2 < 0 || *v2 >= N_Vertices){
+        return;
+    }
+    TipoApontador anterior = Adj[*v1].Primeiro;
+    while (anterior->prox != nullptr){
+        if (anterior->prox->item.Vertice == *v2){
+            TipoItem removido;
+            if (Adj[*v1].retira(anterior, &removido)){
+                *p = removido.Peso;
+                --N_Arestas;
+            }
+            return;
+        }
+        anterior = anterior->prox;
+    }
+}
+\end{minted}
+
+\subparagraph{Método \texttt{liberaGrafo()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Limpa o grafo.
+
+    \textbf{Parâmetros:} A função não possui parâmetros.
+
+    \textbf{Retorno:} A função não possui retorno.
+
+    \textbf{Funcionamento:} Chama a função que torna o grafo vazio.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+void TipoGrafo::liberaGrafo(){
+    FGVazio();
+}
+\end{minted}
+
+\subparagraph{Método \texttt{imprimeGrafo()}}
+
+    \mbox{}\par
+    \noindent
+    \textbf{Finalidade:} Imprime as listas de adjacência de cada vértice.
+
+    \textbf{Parâmetros:} A função não possui parâmetros.
+
+    \textbf{Retorno:} A função não possui retorno.
+
+    \textbf{Funcionamento:} Para cada vértice, imprime a sua lista de adjacência.
+
+\begin{minted}[frame=lines, linenos, fontsize=\small]{cpp}
+void TipoGrafo::imprimeGrafo(){
+    for (int i = 0; i < N_Vertices; i++){
+        printf("Vertice%2d: ", i);
+        Adj[i].imprime();
+    }
+}
+\end{minted}
+
+\section*{Referências}
+
+\begin{thebibliography}{2}
+
+\bibitem{wikipedia:matriz_adjacencia}
+MATRIZ DE ADJACÊNCIA. In: WIKIPÉDIA, a enciclopédia livre. Flórida: Wikimedia Foundation, 2017. 
+Disponível em: \url{https://wikipedia.org}. Acesso em: 6 jan. 2017.
+
+\bibitem{wikipedia:lista_adjacencia}
+LISTA DE ADJACÊNCIA. In: WIKIPÉDIA, a enciclopédia livre. Flórida: Wikimedia Foundation, 2018. 
+Disponível em: \url{https://wikipedia.org}. Acesso em: 20 mar. 2018.
+
+\end{thebibliography}
+
+\end{document}

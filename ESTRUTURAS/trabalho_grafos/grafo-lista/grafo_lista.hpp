@@ -108,6 +108,9 @@ public:
      * 
      * @param p elemento anterior do item a ser removido
      * @param i item a ser removido
+     * 
+     * @return `true` se a remoção foi bem sucedida
+     * @return `false` se a remoção não foi bem sucedida    
      */
     bool retira(TipoApontador p, TipoItem *i);
 
@@ -172,10 +175,10 @@ public:
     bool listaAdjVazia(TipoValorVertice *v);
 
     /**
-     * @brief Retrona a primeira aresta da lista de adjacência do vértice
+     * @brief Retorna a primeira aresta da lista de adjacência do vértice
      * 
      * @param v vértice a ser verificado
-     * @return TipoApontador 
+     * @return A primeira adjacência da lista
      */
     TipoApontador primeiroListaAdj(TipoValorVertice *v);
 

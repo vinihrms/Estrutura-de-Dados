@@ -5,13 +5,25 @@ using namespace std;
 
 Grafo::Grafo(int numero_vertices)
     : N_Vertices(numero_vertices), N_Arestas(0){
-    for (int i = 0; i <= numero_vertices; i++){
-        for (int j = 0; j <= numero_vertices; j++){
+    for (int i = 0; i < numero_vertices; i++){
+        for (int j = 0; j < numero_vertices; j++){
             Matriz[i][j] = 0;}}}
 
 void Grafo::insereAresta(TipoValorVertice *v1, TipoValorVertice *v2,
                          TipoPeso *peso)
 {
+    if (v1 == nullptr || v2 == nullptr || peso == nullptr ||
+        *v1 < 0 || *v1 >= N_Vertices ||
+        *v2 < 0 || *v2 >= N_Vertices || *peso <= 0)
+    {
+        return;
+    }
+
+    if (this->Matriz[*v1][*v2] == 0)
+    {
+        ++N_Arestas;
+    }
+
     this->Matriz[*v1][*v2] = *peso;
 }
 
@@ -93,7 +105,10 @@ void Grafo::proxAdj(TipoValorVertice *v, TipoValorVertice *adj, TipoPeso *p,
 
 void Grafo::retiraAresta( TipoValorVertice *v1, TipoValorVertice *v2, TipoPeso *p)
 {
-    if(this->Matriz[*v1][*v2] == 0)
+    if (v1 == nullptr || v2 == nullptr || p == nullptr ||
+        *v1 < 0 || *v1 >= N_Vertices ||
+        *v2 < 0 || *v2 >= N_Vertices ||
+        this->Matriz[*v1][*v2] == 0)
     {
         printf("Aresta não existe!\n");
     }
@@ -101,6 +116,7 @@ void Grafo::retiraAresta( TipoValorVertice *v1, TipoValorVertice *v2, TipoPeso *
     {
         *p = this->Matriz[*v1][*v2];
         this->Matriz[*v1][*v2] = 0;
+        --N_Arestas;
     }
 }
 
